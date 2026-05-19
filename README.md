@@ -129,6 +129,96 @@ review.md 已經包含：
 
 ---
 
+## 關鍵指標說明
+
+系統用以下幾個量化指標來找迷因、排序、分類。理解這幾個指標就能讀懂所有輸出。
+
+### `meme_quality`（cluster 層級主分數，0–1）
+
+每個 cluster 一個分數，越高代表「越像迷因」。由四個獨立訊號加權合成：
+
+```
+meme_quality = 0.40 × engagement_density   ← 讚數密度
+             + 0.30 × kw_distinctiveness    ← 關鍵字鑑別度
+             + 0.20 × scene_specificity     ← 場景對應強度
+             + 0.10 × variation_richness    ← 內部變奏
+```
+
+四個訊號分別量什麼：
+
+| 訊號 | 計算 | 反映什麼 | 例子 |
+|---|---|---|---|
+| `engagement_density` | `log(likes_total / size + 1)` | 平均每則留言能拿多少讚 | 小群高讚（如「果子狸」36 則 9450 讚）得分高 |
+| `kw_distinctiveness` | c-TF-IDF top-3 字元 n-gram 的 IDF 平均 | 是否有獨特 catchphrase | 「巧克力球」「果子狸」這種獨佔詞高，「甄嬛」「皇上」這種大家都用的低 |
+| `scene_specificity` | 群內留言對最近場景的 cosine sim 平均 | 是否指向具體劇情點 | 「熹妃回宮」明確指向 ep56-891，分數高；空泛感想低 |
+| `variation_richness` | 群內留言 embedding 對 centroid 的距離標準差 | 群內是不是有「變奏」 | 接龍年份不同、填空換主角 → 標準差大 → 真的在玩這個梗 |
+
+> 四個訊號**各自在這次分析的所有 cluster 內做 min-max normalize 到 0–1** 後再加權。所以 `meme_quality` 是**相對排名**，數值在不同資料集間不能直接比較。
+
+---
+
+### Quote vs Remix 三分類（cluster 層級）
+
+每個 cluster 對應到劇本最相似的台詞，依該 sim 分三類：
+
+| 類型 | sim 範圍 | 意義 | 例子 |
+|---|---|---|---|
+| `direct_quote` | sim > 0.75 | 幾乎是原文照搬 | 留言「太監：熹妃回宮——」直接引用 |
+| `template_modification` | 0.5 < sim ≤ 0.75 | 套格式仿作 | 「X：我就害誰」格式換主詞 |
+| `creative_derivative` | sim ≤ 0.5 | 二次創作，脫離原台詞 | 改編、玩梗、新比喻 |
+
+每群輸出 `avg_top_sim`（前 5 高讚留言對最近台詞的平均 sim）作為分類依據。
+
+---
+
+### 場景熱度指標（scene 層級）
+
+每個劇情場景（ep56-894 等）依以下排序：
+
+| 指標 | 意義 |
+|---|---|
+| `n_clusters` | 多少個 cluster 以這幕為主場景 |
+| `total_likes` | 對應 cluster 的總讚數加總（最直接的「熱度」指標） |
+| `avg_meme_qual` | 對應 cluster 的平均 meme_quality |
+| `avg_scene_sim` | 留言對此幕的平均 cosine sim |
+| `top_clusters` | 該幕對應的 Top-3 cluster ID + 讚數 |
+
+---
+
+### 角色排行指標（character 層級）
+
+每個角色（皇帝、甄嬛、安陵容...）的台詞被多少 cluster 引用：
+
+| 指標 | 意義 |
+|---|---|
+| `被迷因化次數` | 多少個 cluster 對應到該角色的台詞 |
+| `總讚數` | 這些 cluster 的讚數加總 |
+| `平均每群讚數` | 「每出場一次能爆多少」（影響力效率） |
+| `平均sim` | 對應台詞的平均 quote sim |
+
+---
+
+### Cluster 基本欄位
+
+| 欄位 | 意義 |
+|---|---|
+| `cluster_label` | 群編號，`-1` 表示 noise（沒被歸進任何群） |
+| `size` | 群內留言數 |
+| `likes_total` / `likes_max` | 群內總讚數 / 最高讚的留言 |
+| `is_interactive_candidate` | 是否為 noise 中讚數 ≥ 500 的「潛力梗候選」 |
+
+---
+
+### Pipeline 過濾門檻
+
+| 參數 | 預設值 | 意義 |
+|---|---|---|
+| `F_MIN_LIKES` | 2 | 留言至少要有 2 讚才進分群（過濾雜訊） |
+| `INTERACTIVE_MIN_LIKES` | 500 | noise 留言讚數 ≥ 此值列為潛力候選 |
+| `MIN_CLUSTER_SIZE` | 20 | HDBSCAN 一群至少 20 則留言 |
+
+---
+
 ## 最佳 Pipeline 參數（已固定）
 
 來自 autoresearch 實驗找到的最佳組合：
