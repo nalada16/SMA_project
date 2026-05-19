@@ -1,6 +1,6 @@
 # Final Project — 《甄嬛傳》迷因發掘系統
 
-從 YouTube 留言中自動找出迷因、對應劇情、評估商業價值，並產出潛力梗預測。
+從 YouTube 留言中自動找出迷因、對應劇情、評估商業價值。
 
 > 這個資料夾是 **單次跑、不含 autoresearch 實驗迴圈** 的完整版本。所有參數已從 autoresearch 找到的最佳組合固定下來。
 
@@ -19,11 +19,11 @@ embed_scripts.py        embed_lines.py
                 ↓
         clusters.parquet (86 群 + noise)
                 ↓
-   ┌────────────┴────────────┬─────────────────┬───────────────┐
-   ↓                          ↓                  ↓                ↓
-analyze.py        classify_quote_vs_remix   scene_heatmap   meme_potential
-   ↓                          ↓                  ↓                ↓
-cluster_analysis  quote_classification    scene_heatmap     potential_predictions
+   ┌────────────┴────────────┬─────────────────┐
+   ↓                          ↓                  ↓
+analyze.py        classify_quote_vs_remix   scene_heatmap
+   ↓                          ↓                  ↓
+cluster_analysis  quote_classification    scene_heatmap.csv/png
                                               ↓
                                           judge.py → review_for_judge.md
                                               ↓
@@ -46,7 +46,6 @@ cluster_analysis  quote_classification    scene_heatmap     potential_prediction
 | `analyze.py` | 場景對應 + c-TF-IDF + meme_quality 評分 | cluster.py |
 | `classify_quote_vs_remix.py` | 把每群分類成 引用 / 改編 / 二創 | cluster.py + embed_lines.py |
 | `scene_heatmap.py` | 場景引爆熱度排行 + heatmap 視覺化 | analyze.py |
-| `meme_potential.py` | 從台詞特徵預測潛力梗 | embed_lines.py |
 | `judge.py` | 產生 LLM judge 用的 review.md（給 agent 讀）| analyze.py |
 | `run_all.py` | 一鍵跑除了 embed 之外的所有步驟 | — |
 
@@ -91,7 +90,7 @@ uv run final_project/embed_lines.py --quantize       # 577 對白，~15 分鐘
 uv run final_project/run_all.py
 ```
 
-會依序執行 cluster → analyze → quote → heatmap → potential → judge，全部用 CPU 即可。
+會依序執行 cluster → analyze → quote → heatmap → judge，全部用 CPU 即可。
 
 ### 4. 最後一步：LLM judge（半自動）
 
@@ -125,7 +124,6 @@ review.md 已經包含：
 | `quote_classification.csv` | 每群分類為 direct_quote / template / creative | 報告 |
 | `scene_heatmap.csv` | 場景引爆熱度排行 | 報告 |
 | `scene_heatmap.png` | 視覺化 heatmap | 報告 |
-| `potential_predictions.csv` | 所有台詞的迷因潛力分數 | 報告 |
 | `review_for_judge.md` | 給 Claude Code 判斷用 | Agent |
 | `meme_inventory.yaml` | **最終迷因清單**（agent 寫）| 報告 |
 
