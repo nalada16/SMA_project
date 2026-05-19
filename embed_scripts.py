@@ -21,15 +21,17 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
-DATA_DIR    = Path(__file__).parent / "data"
+ROOT        = Path(__file__).parent
+DATA_DIR    = ROOT / "data"
+SCRIPT_DIR  = ROOT / "huan_scripts"
 MODEL_NAME  = "Qwen/Qwen3-Embedding-8B"
 OUTPUT_PATH = DATA_DIR / "scripts_with_embedding.parquet"
 MAX_LENGTH  = 512
 
 EPISODE_FILES = {
-    "ep56": (56, DATA_DIR / "ep56.txt"),
-    "ep63": (63, DATA_DIR / "ep63.txt"),
-    "ep76": (76, DATA_DIR / "ep76.txt"),
+    "ep56": (56, SCRIPT_DIR / "ep56.txt"),
+    "ep63": (63, SCRIPT_DIR / "ep63.txt"),
+    "ep76": (76, SCRIPT_DIR / "ep76.txt"),
 }
 
 SCENE_RE = re.compile(r'第(\d+)幕(（续）)?')

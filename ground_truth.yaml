@@ -1,0 +1,129 @@
+# SMA Ground Truth — 已驗證迷因清單
+# Layer 1 評估依據：演算法必須能找到這些迷因 + 對應到正確場景
+#
+# 來源：
+#   - 從 11,087 則 YouTube 留言中觀察到的高讚 cluster
+#   - 對照網路 ep56/ep63/ep76 梗圖清單交叉驗證
+#   - 已透過 verify_meme_mapping.py 驗證
+#
+# 欄位說明：
+#   id                 內部識別碼
+#   name               人類可讀名稱
+#   type               迷因類型（見下方分類）
+#   signature_keywords 用於在留言中比對的關鍵詞（regex 用 | 串接）
+#   canonical_text     一則代表性留言
+#   canonical_likes    那則留言的讚數
+#   scene_ref          人類認定的對應場景（episode-scene_number）
+#   algo_verified      當前演算法能否正確對應到此場景
+
+confirmed_memes:
+  - id: m001
+    name: 熹妃回宮接龍
+    type: catchphrase_chain
+    signature_keywords: [熹妃, 回宮, 恭迎]
+    canonical_text: "2023了 我還在恭迎熹妃娘娘回宮😚"
+    canonical_likes: 3707
+    scene_ref: ep56-891
+    algo_verified: true
+
+  - id: m002
+    name: 嬪妃互害填字
+    type: format_template
+    signature_keywords: [我就害, 誰害]
+    canonical_text: "皇后:誰有孕我就害誰 華妃:誰得寵我就害誰 甄嬛:誰害我我就害誰 沈眉莊:誰害嬛兒我就害誰 安陵容:誰對我好我就害誰 果郡王:誰穿綠衣我就撩"
+    canonical_likes: 7058
+    scene_ref: ep56-894
+    algo_verified: true
+
+  - id: m003
+    name: 小允子神隊友
+    type: character_meme
+    signature_keywords: [小允子, 神隊友]
+    canonical_text: "小允子這種神隊友哪裡找? 會剪綵紙、會飛天扮鬼、會抓小偷、會打死敵人、會幫嬛嬛排除一切困難..."
+    canonical_likes: 10621
+    scene_ref: ep76-1178
+    algo_verified: true
+
+  - id: m004
+    name: 果子狸胖維尼
+    type: quote_modification
+    signature_keywords: [果子狸, 胖維尼, 杏花微雨]
+    canonical_text: "那年杏花微雨,你说你是果子狸,其实你是胖维尼"
+    canonical_likes: 5098
+    scene_ref: ep76-1182
+    algo_verified: true
+
+  - id: m005
+    name: 皇上巧克力球
+    type: prop_joke
+    signature_keywords: [巧克力球, 巧克力]
+    canonical_text: "皇上:我最期待的就是每次演吃丹藥的時候,因為都可以吃到巧克力球"
+    canonical_likes: 7145
+    scene_ref: ep76-1179
+    algo_verified: false
+    failure_mode: prop_confusion
+    failure_note: "演算法把它對到 ep56-896（永壽宮安胎藥場景），因為「藥」詞彙語意接近"
+
+  - id: m006
+    name: 寧貴人風紀股長
+    type: character_meme
+    signature_keywords: [寧貴人, 寧嬪, 風紀股長]
+    canonical_text: "寧貴人直接站上台 我直接噴笑 超像風紀股長"
+    canonical_likes: 5886
+    scene_ref: ep56-894
+    algo_verified: true
+
+  - id: m007
+    name: 皇上拉劍帶冤死
+    type: trivia
+    signature_keywords: [劍帶, 冤死]
+    canonical_text: "小知識:皇上死前拉劍帶,不是在掙扎,而是要告訴後人,他是冤死的。如果後人發現劍帶斷了,當時在皇帝身邊的人一律處死"
+    canonical_likes: 1972
+    scene_ref: ep76-1179
+    algo_verified: false
+    failure_mode: emotion_blending
+    failure_note: "演算法把它對到 ep76-1182（葉澜依割腕），因為情緒類型相近"
+
+  - id: m008
+    name: 寧嬪最強果粉
+    type: character_meme
+    signature_keywords: [寧嬪, 果粉]
+    canonical_text: "寧嬪真的是最強果粉,護駕完他的妻女直接跟隨偶像腳步"
+    canonical_likes: 2336
+    scene_ref: ep76-1182
+    algo_verified: false
+    failure_mode: dialogue_density_bias
+    failure_note: "演算法跑到 ep56-894（對話密度高）；寧嬪相關綜合評論被吸引到對話結構相近的場景"
+
+
+# 潛力迷因測試題（不告訴演算法、用來驗證演算法能否從 noise 中挖出）
+potential_memes:
+  - id: p001
+    name: 你看了幾次接龍
+    type: interactive
+    signature_keywords: [看過, 次數]
+    canonical_text: "以下是你看過甄嬛傳的次數 ⬇️"
+    canonical_likes: 14070
+    scene_ref: null  # 不繫於特定場景
+    discovery_signal: noise_high_like
+    note: "Proposal 中描述的「尚未形成規模但具潛力的新梗」典型案例。單則 14,070 讚但未形成 cluster"
+
+
+# 類型分類定義
+meme_types:
+  catchphrase_chain:   "接龍型，固定句式 + 變動部分（年份/次數等）"
+  format_template:     "套用格式仿作（X:Y就害誰）"
+  character_meme:      "圍繞特定角色的標籤化梗"
+  quote_modification:  "經典台詞二創改編"
+  prop_joke:           "道具/物件玩笑"
+  trivia:              "小知識／Easter egg 型"
+  interactive:         "邀請互動的格式（接龍、填空）"
+
+
+# 失敗模式分類（用於 failure_analysis）
+failure_modes:
+  prop_confusion:        "道具梗被同類道具場景吸走（如巧克力球→丹藥）"
+  emotion_blending:      "角色綜合情緒梗被吸到情緒相近場景"
+  dialogue_density_bias: "對話密度高的場景吸收所有對話類留言"
+  out_of_scope_scene:    "對應場景不在 27 個劇本片段中"
+  unknown:               "尚未分類的失敗模式"
