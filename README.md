@@ -38,16 +38,16 @@ cluster_analysis  quote_classification    scene_heatmap.csv/png
 
 ### Scripts（按執行順序）
 
-| 檔案 | 功能 | 需先跑 |
-|---|---|---|
-| `embed_scripts.py` | 把 EP56/63/76 劇本切成 27 個「幕」做 embedding | — |
-| `embed_lines.py` | 把劇本切成 577 句對白做 line-level embedding | — |
-| `cluster.py` | 用最佳 pipeline 跑分群（UMAP + HDBSCAN）| comments_with_embedding.parquet |
-| `analyze.py` | 場景對應 + c-TF-IDF + meme_quality 評分 | cluster.py |
-| `classify_quote_vs_remix.py` | 把每群分類成 引用 / 改編 / 二創 | cluster.py + embed_lines.py |
-| `scene_heatmap.py` | 場景引爆熱度排行 + heatmap 視覺化 | analyze.py |
-| `judge.py` | 產生 LLM judge 用的 review.md（給 agent 讀）| analyze.py |
-| `run_all.py` | 一鍵跑除了 embed 之外的所有步驟 | — |
+| 檔案 | 功能 | 需先跑 | 產出檔案 |
+|---|---|---|---|
+| `embed_scripts.py` | 把 EP56/63/76 劇本切成 27 個「幕」做 embedding | — | `data/scripts_with_embedding.parquet` |
+| `embed_lines.py` | 把劇本切成 577 句對白做 line-level embedding | — | `data/lines_with_embedding.parquet` |
+| `cluster.py` | 用最佳 pipeline 跑分群（UMAP + HDBSCAN）| comments_with_embedding.parquet | `data/clusters.parquet` `data/umap_50d_cache.npy` |
+| `analyze.py` | 場景對應 + c-TF-IDF + meme_quality 評分 | cluster.py | `data/cluster_analysis.parquet` `data/comment_scene_mapping.parquet` |
+| `classify_quote_vs_remix.py` | 把每群分類成 引用 / 改編 / 二創 | cluster.py + embed_lines.py | `output/quote_classification.csv` |
+| `scene_heatmap.py` | 場景引爆熱度排行 + heatmap 視覺化 | analyze.py | `output/scene_heatmap.csv` `output/scene_heatmap.png` |
+| `judge.py` | 產生 LLM judge 用的 review.md（給 agent 讀）| analyze.py | `output/review_for_judge.md` |
+| `run_all.py` | 一鍵跑除了 embed 之外的所有步驟 | — | （同上各步驟）|
 
 ### 共用工具
 
