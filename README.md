@@ -236,13 +236,160 @@ meme_quality = 0.40 × engagement_density   ← 讚數密度
 
 ---
 
-## 換集數的使用方式
+## 換資料 / 擴充集數
 
-如果想跑其他集數（EP1, EP30, ...）：
+### 你需要準備的三件事
 
-1. 在 `huan_scripts/` 放新集數的 `epXX.txt`
-2. 修改 `embed_scripts.py` 和 `embed_lines.py` 裡的 `EPISODE_FILES` 加上新集數
-3. 替換 `data/comments_with_embedding.parquet` 為新集數的留言資料（格式：含 `text_clean`, `like_count`, `keep`, `embedding` 4096 維）
-4. 跑 `embed_scripts.py`、`embed_lines.py`、`run_all.py`
+#### 1. 留言資料 `data/comments_with_embedding.parquet`
 
-ground_truth.yaml 也要對應更新（這集的已知迷因），不然 judge 的 few-shot 會錯位。
+DataFrame 必須包含這幾個欄位（其他欄位會被忽略）：
+
+| 欄位 | 型別 | 說明 |
+|---|---|---|
+| `comment_id` | string | 留言唯一 ID（用來去重、合併用）|
+| `text_clean` | string | 留言文字（已清理，去除 emoji 過多/換行/特殊符號可選）|
+| `like_count` | int | 按讚數（用於 prefilter 和 ranking）|
+| `keep` | bool | 是否保留分析（`False` 會被 `prepare.py:load_comments()` 過濾）|
+| `embedding` | numpy.ndarray (4096,) | Qwen3-Embedding-8B 的向量，**已 L2 normalize** |
+
+**embedding 重點**：
+- 維度必須是 **4096**，跟劇本的 `scripts_with_embedding.parquet` 一致（同個模型才能 cosine similarity）
+- 必須是 numpy array（parquet 存 list 也行，但要能用 `np.stack(df["embedding"].values)` 還原成 (N, 4096) 矩陣）
+- 建議 normalize 後再存（雖然 cosine similarity 內部會重算，但 normalized embedding 跨檔案運算更安全）
+
+最小驗證腳本：
+```python
+import pandas as pd
+import numpy as np
+df = pd.read_parquet("data/comments_with_embedding.parquet")
+assert {"comment_id", "text_clean", "like_count", "keep", "embedding"} <= set(df.columns)
+X = np.stack(df["embedding"].values)
+assert X.shape[1] == 4096, f"embedding dim should be 4096, got {X.shape[1]}"
+print(f"✓ {len(df)} comments, X.shape={X.shape}")
+```
+
+#### 2. 劇本原文 `huan_scripts/epXX.txt`
+
+純文字檔，格式如下（每集一個檔）：
+
+```
+第891幕
+（？皇帝皇后和众嫔妃迎候甄嬛）
+太监：熹妃回宫——
+甄嬛：臣妾归来，恭祝皇上、皇后圣体康健、福泽万年。
+皇帝：一路可好吗？
+...
+
+第892幕
+（永寿宫）
+皇帝：朕知道你喜欢赏莲...
+```
+
+格式規則：
+- **場景標記**：`第XXX幕` 或 `第XXX幕（续）`
+- **舞台指示**：用全形括弧 `（...）` 包起來，會被自動跳過
+- **對白行**：`角色：對白`（全形或半形冒號都可），角色名 1–6 個中文字
+- 空行隨意，會自動忽略
+
+完成後，到 `embed_scripts.py` 和 `embed_lines.py` 裡加上新集數：
+
+```python
+EPISODE_FILES = {
+    "ep56": (56, SCRIPT_DIR / "ep56.txt"),
+    "ep63": (63, SCRIPT_DIR / "ep63.txt"),
+    "ep76": (76, SCRIPT_DIR / "ep76.txt"),
+    "ep1":  (1,  SCRIPT_DIR / "ep1.txt"),   # 新增這行
+}
+```
+
+#### 3. Ground Truth `ground_truth.yaml`
+
+LLM judge 用這個檔案作為 few-shot 範例，所以**換集數的時候 ground truth 也要換**，不然會用其他集數的迷因當示範，判斷就會偏。
+
+格式：
+
+```yaml
+confirmed_memes:
+  - id: m001                                # 內部 ID，m001 / m002 ... 流水號
+    name: 熹妃回宮接龍                       # 人類看得懂的名稱
+    type: catchphrase_chain                  # 類型，見下方七選一
+    signature_keywords: [熹妃, 回宮, 恭迎]    # 偵測用的關鍵字，會用 regex OR 比對
+    canonical_text: "2023了 我還在恭迎熹妃娘娘回宮😚"   # 代表留言原文
+    canonical_likes: 3707                    # 那則留言的讚數
+    scene_ref: ep56-891                      # 對應的場景，格式 epXX-XXX
+    algo_verified: true                      # 演算法是否能找到（首次標時設 false 也 OK）
+
+potential_memes:                             # 潛力梗（noise 中的）
+  - id: p001
+    name: 你看了幾次接龍
+    type: interactive
+    signature_keywords: [看過, 次數]
+    canonical_text: "以下是你看過甄嬛傳的次數 ⬇️"
+    canonical_likes: 14070
+    scene_ref: null                          # 沒對應特定場景就 null
+    discovery_signal: noise_high_like
+```
+
+**七種 type**（給 LLM 判斷時的分類選項）：
+
+| type | 說明 | 例子 |
+|---|---|---|
+| `catchphrase_chain` | 接龍型，固定句式 + 變動部分（年份/次數）| 「2024 了我還在恭迎熹妃娘娘回宮」 |
+| `format_template` | 套用格式仿作 | 「X：誰Y我就害誰」 |
+| `character_meme` | 圍繞特定角色的標籤化 | 「小允子神隊友」「寧貴人風紀股長」 |
+| `quote_modification` | 經典台詞二創改編 | 「果子狸→胖維尼」 |
+| `prop_joke` | 道具/物件玩笑 | 「巧克力球」 |
+| `trivia` | 小知識／考據型 | 「皇上拉劍帶冤死」 |
+| `interactive` | 邀請互動的格式 | 「以下是你 X 過 Y 的次數 ⬇️」 |
+
+**怎麼標 ground truth**：
+1. 開 `explore_results.ipynb` 看 Top 15 cluster
+2. 挑出明顯是迷因的（有固定句式 / 角色化標籤 / 高重複度）
+3. 從該 cluster 找最有代表性的高讚留言當 `canonical_text`
+4. 在劇本中找對應的幕，填 `scene_ref`
+5. 寫到 `ground_truth.yaml`
+
+**建議**：至少標 5–8 個 confirmed_memes，外加 1–2 個 potential。LLM 才有夠的範例可參考。
+
+---
+
+### 完整擴充流程
+
+```bash
+# 1. 把資料放好
+cp your_comments.parquet  final_project/data/comments_with_embedding.parquet
+cp your_ep1.txt           final_project/huan_scripts/ep1.txt
+vim final_project/ground_truth.yaml          # 改成這集的迷因
+
+# 2. 改 embed_scripts.py / embed_lines.py 加新集數
+vim final_project/embed_scripts.py    # EPISODE_FILES 加新行
+vim final_project/embed_lines.py      # 同上
+
+# 3. 跑 embedding（需 GPU）
+uv run final_project/embed_scripts.py --quantize
+uv run final_project/embed_lines.py --quantize
+
+# 4. 一鍵跑分析
+uv run final_project/run_all.py
+
+# 5. 開 Claude Code 讀 review.md 寫 inventory.yaml
+```
+
+---
+
+### 常見問題
+
+**Q: 我沒有 ground truth，可以跑嗎？**
+
+可以跑 `cluster.py` / `analyze.py` / `classify_quote_vs_remix.py` / `scene_heatmap.py`，這四個不需要 ground truth。但 `judge.py` 會缺 few-shot 範例，LLM 判斷品質會下降。建議至少手標 3 個再跑 judge。
+
+**Q: 我的 embedding 不是 4096 維可以嗎？**
+
+可以，但留言和劇本的 embedding 維度**必須一致**（同個模型）。如果你換成 1024 維的 model，留言和劇本都要重新 embed。
+
+**Q: 我能用其他語言模型嗎？**
+
+可以，但要注意：
+- 留言和劇本必須用**同一個模型**編碼
+- 中文語料效果 Qwen3-Embedding 較好，BGE-M3 也可
+- 換完後 `architecture.md` 的「為什麼選 Qwen3」段落請對應更新
