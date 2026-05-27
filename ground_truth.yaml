@@ -95,6 +95,176 @@ confirmed_memes:
     failure_mode: dialogue_density_bias
     failure_note: "演算法跑到 ep56-894（對話密度高）；寧嬪相關綜合評論被吸引到對話結構相近的場景"
 
+  - id: m009
+    name: 溫柔刀
+    type: quote_modification
+    signature_keywords: [溫柔刀, 刀刀]
+    canonical_text: "溫柔刀，刀刀割人性命"
+    canonical_likes: null
+    scene_ref: null
+    algo_verified: false
+    usage_note: "該劇情出現時大家會留言"
+
+  - id: m010
+    name: 福氣給你要不要
+    type: quote_modification
+    signature_keywords: [福氣給你, 要不要]
+    canonical_text: "這福氣給你要不要啊"
+    canonical_likes: null
+    scene_ref: null
+    algo_verified: false
+    usage_note: "用於自嘲：網友把爛事包裝成「福氣」再問一遍，製造荒謬感"
+
+  - id: m011
+    name: 熹妃娘娘駕到
+    type: catchphrase_chain
+    signature_keywords: [熹妃娘娘駕到, 娘娘駕到]
+    canonical_text: "熹妃娘娘駕到"
+    canonical_likes: null
+    scene_ref: null
+    algo_verified: false
+    usage_note: "該劇情出現時大家會留言"
+
+  - id: m012
+    name: 無比噁心
+    type: quote_modification
+    signature_keywords: [無比噁心]
+    canonical_text: "都讓我覺得無比噁心"
+    canonical_likes: null
+    scene_ref: ep76-1135
+    algo_verified: false
+    usage_note: "直接引用表達強烈厭惡，常出現在看到爛新聞、爛事件之後，留言直接貼台詞；該劇情出現時大家會留言，且無比噁心有 5B2C 的變體"
+
+  - id: m013
+    name: 剛入宮的甄嬛已死
+    type: quote_modification
+    signature_keywords: [剛入宮的甄嬛, 已經死了]
+    canonical_text: "剛入宮的甄嬛已經死了"
+    canonical_likes: null
+    scene_ref: ep76-1113
+    algo_verified: false
+    usage_note: "該劇情出現時大家會留言"
+
+  - id: m014
+    name: 本宮來晚了
+    type: catchphrase_chain
+    signature_keywords: [本宮來晚了, 好生熱鬧]
+    canonical_text: "本宮來晚了，好生熱鬧"
+    canonical_likes: null
+    scene_ref: null
+    algo_verified: false
+    usage_note: "用於跟風熱門話題時的自嘲式進場白，常會在熱門貼文底下出現此留言"
+
+  - id: m015
+    name: 賤人就是矯情
+    type: quote_modification
+    signature_keywords: [賤人就是矯情, 矯情]
+    canonical_text: "賤人就是矯情"
+    canonical_likes: null
+    scene_ref: null
+    algo_verified: false
+    usage_note: "評論他人誇大反應的萬用句；該劇情出現時大家會留言"
+
+  - id: m016
+    name: 臣妾做不到
+    type: catchphrase_chain
+    signature_keywords: [臣妾做不到, 做不到啊]
+    canonical_text: "臣妾做不到啊！"
+    canonical_likes: null
+    scene_ref: null
+    algo_verified: false
+    usage_note: "該劇情出現時大家會留言"
+
+  - id: m017
+    name: 告發熹妃私通
+    type: quote_modification
+    signature_keywords: [告發熹妃, 私通]
+    canonical_text: "臣妾要告發熹妃私通"
+    canonical_likes: null
+    scene_ref: ep63-996
+    algo_verified: false
+    usage_note: "該劇情出現時大家會留言"
+
+  - id: m018
+    name: 傳說代表上香
+    type: interactive
+    signature_keywords: [傳說代表, 上香]
+    canonical_text: "傳說代表上香"
+    canonical_likes: null
+    scene_ref: null
+    algo_verified: false
+    usage_note: "互動接龍型：留言者用「傳說/地區（中部/北部） 代表上香」發起儀式感互動；常在劇情中有人過世時（特別是皇上）出現的留言，引導評論區參與"
+
+  - id: m019
+    name: 你的福氣在後頭
+    type: quote_modification
+    signature_keywords: [福氣在後頭, 你的福氣]
+    canonical_text: "你的福氣在後頭"
+    canonical_likes: null
+    scene_ref: null
+    algo_verified: false
+    usage_note: "安慰別人現在雖然很慘，但未來可能會變好。"
+
+  - id: m020
+    name: 驚鴻舞衣
+    type: quote_modification
+    signature_keywords: [驚鴻舞, 驚鴻一舞]
+    canonical_text: "驚鴻舞衣"
+    canonical_likes: null
+    scene_ref: null
+    algo_verified: false
+    usage_note: "該劇情出現時大家會留言"
+
+  - id: m021
+    name: 剪秋頭好痛
+    type: character_meme
+    signature_keywords: [剪秋, 頭好痛, 本宮的頭]
+    canonical_text: "剪秋，本宮的頭好痛"
+    canonical_likes: null
+    scene_ref: null
+    algo_verified: false
+    usage_note: "該劇情出現時大家會留言；網友在面對荒謬事情、吃到離譜八卦時感到心累、頭痛，也會留言。"
+
+  - id: m022
+    name: 翠果打爛他的嘴
+    type: quote_modification
+    signature_keywords: [翠果, 打爛]
+    canonical_text: "翠果，打爛他的嘴"
+    canonical_likes: null
+    scene_ref: null
+    algo_verified: false
+    usage_note: "表達「讓某人閉嘴」的強烈願望，網友看到爛留言或不實言論時引用；該劇情出現時大家會留言，後有「翠嘴，打爛他的果」的變體"
+
+  - id: m023
+    name: 皇上駕崩
+    type: quote_modification
+    signature_keywords: [皇上駕崩]
+    canonical_text: "皇上駕崩"
+    canonical_likes: null
+    scene_ref: ep76-1156
+    algo_verified: false
+    usage_note: "該劇情出現時大家會留言"
+
+  - id: m024
+    name: 粉色嬌嫩
+    type: quote_modification
+    signature_keywords: [粉色嬌嫩, 你如今幾歲]
+    canonical_text: "粉色嬌嫩，你如今幾歲了？"
+    canonical_likes: null
+    scene_ref: null
+    algo_verified: false
+    usage_note: "調侃「裝嫩」行為，後接「你如今幾歲了」質問"
+
+  - id: m025
+    name: 終究是錯付了
+    type: quote_modification
+    signature_keywords: [錯付了, 終究是錯]
+    canonical_text: "這幾年的情愛與時光，終究是錯付了！"
+    canonical_likes: null
+    scene_ref: null
+    algo_verified: false
+    usage_note: "廣義的「投入落空」情感宣洩：失戀、追星偶像塌房、追劇爛尾都用；該劇情出現時大家會留言"
+
 
 # 潛力迷因測試題（不告訴演算法、用來驗證演算法能否從 noise 中挖出）
 potential_memes:

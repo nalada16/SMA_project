@@ -29,7 +29,7 @@ cluster_analysis  quote_classification    scene_heatmap.csv/png
                                               ↓
                                   （由 Claude Code agent 讀完寫）
                                               ↓
-                                       meme_inventory.yaml
+                                       meme_inventory_N.yaml
 ```
 
 ---
@@ -46,7 +46,7 @@ cluster_analysis  quote_classification    scene_heatmap.csv/png
 | `analyze.py` | 場景對應 + c-TF-IDF + meme_quality 評分 | cluster.py | `data/cluster_analysis.parquet` `data/comment_scene_mapping.parquet` |
 | `classify_quote_vs_remix.py` | 把每群分類成 引用 / 改編 / 二創 | cluster.py + embed_lines.py | `output/quote_classification.csv` |
 | `scene_heatmap.py` | 場景引爆熱度排行 + heatmap 視覺化 | analyze.py | `output/scene_heatmap.csv` `output/scene_heatmap.png` |
-| `judge.py` | 產生 LLM judge 用的 review.md（給 agent 讀）| analyze.py | `output/review_for_judge.md` |
+| `judge.py` | 產生 LLM judge 用的 review.md（給 agent 讀）| analyze.py | `output/review_for_judge.md` `output/meme_inventory_template.yaml` |
 | `run_all.py` | 一鍵跑除了 embed 之外的所有步驟 | — | （同上各步驟）|
 
 ### 共用工具
@@ -54,7 +54,7 @@ cluster_analysis  quote_classification    scene_heatmap.csv/png
 | 檔案 | 功能 |
 |---|---|
 | `prepare.py` | 資料載入函式（comments / scenes / lines / clusters / ground_truth）|
-| `ground_truth.yaml` | 8 個已驗證迷因 + 1 個潛力候選（給 judge.py 當 few-shot 範例）|
+| `ground_truth.yaml` | 25 個已知迷因 (m001–m025) + 1 個潛力候選（給 judge.py 當迷因風格示範，非答案鍵）|
 | `explore_results.ipynb` | 互動瀏覽 notebook |
 
 ### 資料夾
@@ -94,13 +94,35 @@ uv run final_project/run_all.py
 
 ### 4. 最後一步：LLM judge（半自動）
 
-開 Claude Code，請 agent 讀 `output/review_for_judge.md`，照檔案末尾的 prompt 寫 `output/meme_inventory.yaml`。
+開新的 Claude Code session，貼以下 prompt 啟動 agent：
+
+```
+你的任務是從甄嬛傳 YouTube 留言 cluster 中找出具商業價值的迷因。
+
+第一步：讀這個檔案
+final_project/output/review_for_judge.md
+
+檔案包含：
+1. Few-shot 範例（人類認定的迷因，作為風格參考）
+2. 待判斷的 cluster 資料（Top 20，含留言、關鍵字、場景）
+3. Noise 中的高讚孤狼留言
+4. 檔案末尾有完整的判斷規則與輸出格式說明
+
+限制：
+- 不要讀任何 meme_inventory_*.yaml 舊檔案，避免先入為主
+- few-shot 範例是風格示範，不是你必須找到的答案
+- 輸出檔名已在 review_for_judge.md 末尾指定，直接用那個名字
+
+讀完後依照末尾 prompt 開始判斷。
+```
+
+每次跑 `judge.py` 會自動計算下一個序號，review.md 末尾的 prompt 裡直接寫明目標檔名（`meme_inventory_1.yaml`、`meme_inventory_2.yaml`…），不需要手動改名。
 
 review.md 已經包含：
-- 8 個 ground truth 迷因作為 **few-shot 範例**
+- 25 個 ground truth 迷因作為**迷因風格示範**（風格參考，非答案鍵）
 - Top 20 cluster 的留言、關鍵字、場景對應
 - Top 20 noise 候選
-- 完整的判斷 prompt
+- 完整的判斷 prompt + 輸出格式
 
 ---
 
@@ -125,7 +147,8 @@ review.md 已經包含：
 | `scene_heatmap.csv` | 場景引爆熱度排行 | 報告 |
 | `scene_heatmap.png` | 視覺化 heatmap | 報告 |
 | `review_for_judge.md` | 給 Claude Code 判斷用 | Agent |
-| `meme_inventory.yaml` | **最終迷因清單**（agent 寫）| 報告 |
+| `meme_inventory_template.yaml` | 輸出格式範本（judge.py 每次重寫）| Agent |
+| `meme_inventory_N.yaml` | **最終迷因清單**（agent 每次跑產出，序號自動遞增）| 報告 |
 
 ---
 
@@ -315,9 +338,10 @@ confirmed_memes:
     type: catchphrase_chain                  # 類型，見下方七選一
     signature_keywords: [熹妃, 回宮, 恭迎]    # 偵測用的關鍵字，會用 regex OR 比對
     canonical_text: "2023了 我還在恭迎熹妃娘娘回宮😚"   # 代表留言原文
-    canonical_likes: 3707                    # 那則留言的讚數
-    scene_ref: ep56-891                      # 對應的場景，格式 epXX-XXX
+    canonical_likes: 3707                    # 那則留言的讚數（不知道填 null）
+    scene_ref: ep56-891                      # 對應的場景，格式 epXX-XXX（不知道填 null）
     algo_verified: true                      # 演算法是否能找到（首次標時設 false 也 OK）
+    usage_note: "接龍型，每年都有人留言宣告自己還在看"  # 網友怎麼用這個梗（選填，但有助 LLM 判斷）
 
 potential_memes:                             # 潛力梗（noise 中的）
   - id: p001
@@ -372,7 +396,7 @@ uv run final_project/embed_lines.py --quantize
 # 4. 一鍵跑分析
 uv run final_project/run_all.py
 
-# 5. 開 Claude Code 讀 review.md 寫 inventory.yaml
+# 5. 開新 Claude Code session，貼 README「最後一步」的啟動 prompt
 ```
 
 ---

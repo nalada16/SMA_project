@@ -1,0 +1,32 @@
+# meme_inventory_template.yaml — 輸出格式範本
+# 請勿直接修改此檔案，填入內容後存為 meme_inventory_N.yaml
+
+meta:
+  source_file: review_for_judge.md
+  total_clusters_judged: ~
+  total_noise_candidates: ~
+
+discovered_memes:
+  - id: dm001
+    cluster_id: ~
+    name: ~
+    type: ~
+    canonical_text: ~
+    canonical_likes: ~
+    business_value: HIGH/MEDIUM/LOW
+    marketing_angle: ~
+    reasoning: ~
+    matched_reference: ~
+
+non_meme_clusters:
+  - cluster_id: ~
+    theme: ~
+    why_not_meme: ~
+
+potential_candidates:
+  - source: noise
+    text: ~
+    likes: ~
+    type: ~
+    potential_value: HIGH/MEDIUM/LOW
+    reasoning: ~

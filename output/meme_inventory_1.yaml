@@ -1,0 +1,352 @@
+# meme_inventory_1.yaml
+# LLM Judge 產出 — 基於 review_for_judge.md
+# 判斷時間：2026-05-27
+
+meta:
+  source_file: review_for_judge.md
+  total_clusters_judged: 20
+  total_noise_candidates: 20
+
+# ─────────────────────────────────────────
+# 從 cluster 辨識出的迷因（12 個）
+# ─────────────────────────────────────────
+discovered_memes:
+
+  - id: dm001
+    cluster_id: 8
+    name: 果子狸胖維尼
+    type: quote_modification
+    canonical_text: "那年杏花微雨,你说你是果子狸,其实你是胖维尼"
+    canonical_likes: 5098
+    business_value: MEDIUM
+    marketing_angle: >
+      「說是A其實是B」反轉揭露格式——可套用「表裡不符」的品牌嘲諷或自嘲行銷
+      （如：「你說你是低卡，其實你是高脂」食品反差廣告；或「你說你是對手，其實你是我們的試金石」競品對比）。
+      句式帶詩意前綴「那年X微雨」，兼具文藝感與幽默，適合情感型品牌。
+    reasoning: >
+      有明確可仿作句式：「那年X微雨，你說你是Y，其實你是Z」。5098 讚確認高傳播力；
+      留言 5（160 讚）已出現「其實是隻大胖橘」變體，証明句式在流通中被二次改編。
+      Cluster 總讚 9589，size=24，顯示具備規模。
+    matched_reference: m004
+
+  - id: dm002
+    cluster_id: 29
+    name: 私通是我
+    type: format_template
+    canonical_text: "眉庄:環兒怎麼可能跟實初私通呢!跟實初私通的是我啊!《全劇完》"
+    canonical_likes: 2310
+    business_value: LOW
+    marketing_angle: >
+      「[A]怎麼可能[做X]！[做X]的是[B]啊！」自爆反轉格式僅適合劇迷社群或深度娛樂內容互動；
+      「私通」語境無法移植至主流品牌，但脫劇改版（如「怎麼可能[搞砸]！搞砸的是我啊！」）
+      理論上可作為品牌自嘲文案，需審慎使用。
+    reasoning: >
+      留言 1（4336 讚）和留言 2（2310 讚）都在套用同一格式，且留言 3（222 讚）進一步加料改寫，
+      確認已有活躍的社群仿作行為。格式本身（自爆揭露真相）有趣，但「私通」語境嚴重限制商業移植範圍。
+    matched_reference: null
+
+  - id: dm003
+    cluster_id: 6
+    name: 小允子幹掉血滴子
+    type: character_meme
+    canonical_text: "小允子幹掉夏刈太離譜了,還好這小夥子沒有異心,否則他想反清復明八成也不是問題XD"
+    canonical_likes: 2162
+    business_value: HIGH
+    marketing_angle: >
+      「外表低調、實力遠超預期的隱形高手」品牌敘事——適合人才招募（「你以為是普通工具人，
+      其實能反清復明」）、工具/SaaS 能力行銷（「只是個助手？他連特務都幹掉了」）。
+      與 dm009（小允子神隊友）合力形成角色 IP，是本資料集最具延伸性的商業角色。
+    reasoning: >
+      小允子在最終集輕鬆幹掉皇帝親點特務夏刈（血滴子），形成「隱藏 BOSS 級助手」標籤。
+      留言 1、2、3、5 均圍繞此梗，size=53 顯示跨集持續傳播；為 m003（小允子神隊友）在結局場景的
+      高潮爆發，兩個 cluster 合力確認此角色梗已具 IP 規模。
+    matched_reference: m003
+
+  - id: dm004
+    cluster_id: 43
+    name: 欣太嬪職場典範
+    type: character_meme
+    canonical_text: "欣太嬪堪稱職場典範"
+    canonical_likes: 1486
+    business_value: HIGH
+    marketing_angle: >
+      職場躺平 / 佛系生存智慧首選角色——適合 HR 品牌、職場工具 App、心理健康平台行銷。
+      「不爭不搶卻笑到最後」可對應穩健型投資、低調人才獵頭等品牌定位。
+      「欣嬪式攻略」slogan 簡短好記，可直接作為系列行銷主題。
+    reasoning: >
+      留言 1（1931 讚）定義「最有福氣，不爭不搶卻有太妃位子」；留言 2（1486 讚）直接標籤化為
+      「職場典範」；兩則互為佐証，且句式短小有力。「欣太嬪」名稱本身即帶「欣（喜悅）」字，
+      諧音感強。此 cluster 是少數帶有正面商業價值的角色梗。
+    matched_reference: null
+
+  - id: dm005
+    cluster_id: 3
+    name: 直接跳過甘露寺舉手
+    type: interactive
+    canonical_text: "直接跳過甘露寺的舉手"
+    canonical_likes: 8144
+    business_value: MEDIUM
+    marketing_angle: >
+      「直接跳過[痛苦/無聊環節]的舉手」互動格式可移植到品牌社群行銷：
+      「直接跳過週一的舉手🙋」「直接跳過說明書的舉手🙋」——製造集體認同感、誘發按讚互動。
+      適合平台型、娛樂型品牌的社群貼文策略。
+    reasoning: >
+      8144 讚為本 cluster 最高讚，亦是全資料集前段；「X 的舉手」是台灣網路圈成熟的互動公式，
+      透過讓讀者「舉手」確認共同身份製造參與感。雖然 cluster 其他留言未大量仿作此句，
+      但格式本身已超越此劇，屬於通用互動模板。
+    matched_reference: null
+
+  - id: dm006
+    cluster_id: 50
+    name: 嬪妃互害填字
+    type: format_template
+    canonical_text: "皇后:誰有孕我就害誰 華妃:誰得寵我就害誰 甄嬛:誰害我我就害誰 沈眉莊:誰害嬛兒我就害誰 安陵容:誰對我好我就害誰 果郡王:誰穿綠衣我就撩誰 皇上:誰綠我我就寵誰"
+    canonical_likes: 7058
+    business_value: HIGH
+    marketing_angle: >
+      「[角色/身份]：誰X我就Y誰」格式可直接改寫為品牌差異化宣言：
+      「消費者：誰優惠我就買誰」「我們：誰信任我們我們就服務誰」。
+      可生成互動式填空貼文（留言你的版本）；格式極易批量仿作，是所有迷因中格式延伸性最強的一個。
+    reasoning: >
+      典型 format_template：格式清晰、角色可任意替換、7058 讚確認超強傳播力。
+      留言本身已示範 7 個角色套用版本，証明格式可持續擴充；為 few-shot m002 的直接對應 cluster，
+      size=71 是本資料集最大之一。
+    matched_reference: m002
+
+  - id: dm007
+    cluster_id: 45
+    name: 敬妃就是敬業
+    type: character_meme
+    canonical_text: "果然是敬妃真是敬業"
+    canonical_likes: 407
+    business_value: MEDIUM
+    marketing_angle: >
+      「名如其職」諧音文字遊戲型角色梗——適合職場幽默、企業文化推廣的輕量切入。
+      可延伸為「[品牌名]果然[品牌名]」系列廣告文案；或「敬業如敬妃」職場正能量 slogan。
+    reasoning: >
+      「敬妃」諧音「敬業」是簡潔有力的文字遊戲型 character_meme。留言 2（407 讚）直接點明；
+      留言 1（2130 讚）提供了演員忍痛拍完的「真實敬業故事」作為梗的現實依據，讓文字遊戲更有說服力。
+      梗的觸發門檻低，只要說出「敬妃」即可觸發聯想。
+    matched_reference: null
+
+  - id: dm008
+    cluster_id: 31
+    name: 純元皇后是塊磚
+    type: quote_modification
+    canonical_text: "純元皇后是塊磚🧱 哪裡需要哪裡搬💪🏻"
+    canonical_likes: 435
+    business_value: MEDIUM
+    marketing_angle: >
+      「哪裡需要哪裡搬」萬用工具/多功能產品品牌框架——可套用 SaaS、外包服務、人力資源平台。
+      「純元信用卡已刷爆」（1781 讚）另一版本可用於金融/支付品牌的幽默行銷。
+      兩個版本分別對應「功能型」和「資源消耗型」品牌敘事，靈活度高。
+    reasoning: >
+      同一 cluster 出現兩個截然不同方向的 quote_modification：
+      「純元磚哪裡需要哪裡搬」（改編工人諺語，指皇后濫用純元名義）和
+      「純元信用卡已刷爆」（現代金融比喻），顯示此梗具備多方向衍生能力。
+      1781 讚（信用卡版）＋435 讚（磚版）合計確認流通。
+    matched_reference: null
+
+  - id: dm009
+    cluster_id: 5
+    name: 小允子神隊友
+    type: character_meme
+    canonical_text: "小允子這種神隊友哪裡找? 會剪綵紙、會飛天扮鬼、會抓小偷、會打死敵人、會幫嬛嬛排除一切困難..."
+    canonical_likes: 10621
+    business_value: HIGH
+    marketing_angle: >
+      「神隊友」品牌敘事最強錨點——「會X、會Y、會Z」列舉格式直接可套用產品功能清單行銷；
+      「你的小允子在哪裡？」slogan 適合工具類、外包服務、人才媒合平台。
+      10621 讚讓此角色成為本資料集最具 IP 潛力的素材，與 dm003 合力構成「小允子宇宙」。
+    reasoning: >
+      全資料集最高讚留言（10621 讚），為 few-shot m003 的直接對應 cluster。
+      「會X、會Y、會Z」列舉格式極易仿作；dm003（Cluster 6，血滴子場景）確認此角色梗跨集延伸，
+      合計兩 cluster 總讚數超過 26000，是整份資料中最具規模的單一角色迷因。
+    matched_reference: m003
+
+  - id: dm010
+    cluster_id: 12
+    name: 藕粉桂花糖糕
+    type: prop_joke
+    canonical_text: "眉兒最愛吃棗泥山藥糕,卻只會做藕粉桂花糖糕😂😂"
+    canonical_likes: 980
+    business_value: HIGH
+    marketing_angle: >
+      食品 / 餐飲品牌宮廷風聯名首選——「藕粉桂花糖糕」已成劇中美食代名詞，
+      多則留言表達想吃，具備直接的消費轉化驅動力。
+      可推出實體復刻產品（古裝甜點品牌、便利商店限定款）；
+      「愛吃棗泥卻只會做藕粉桂花」的反差結構（愛好≠擅長）亦可改編為品牌幽默文案。
+    reasoning: >
+      留言 2（637 讚）「好想吃吃看」、留言 3（346 讚）「藕粉桂花糖膏專家」均有明確食慾誘發，
+      顯示此道具已超越劇情成為觀眾主動想體驗的真實慾望對象。
+      關鍵字 cluster 高度集中（藕粉、桂花、糖糕多次重複），確認話題凝聚力強。
+    matched_reference: null
+
+  - id: dm011
+    cluster_id: 57
+    name: 寧貴人風紀股長
+    type: character_meme
+    canonical_text: "寧貴人直接站上台 我直接噴笑 超像風紀股長"
+    canonical_likes: 5886
+    business_value: MEDIUM
+    marketing_angle: >
+      「風紀股長型」品牌人格設定（直接、不怕衝突、站出來說不）——適合消費者保護、
+      法律服務、監管合規類品牌；或以「有人站出來說真話」為核心敘事的品牌活動。
+      留言 3（2313 讚）「到處撩穿綠衣的」果郡王梗可作為附帶行銷素材。
+    reasoning: >
+      「寧貴人=風紀股長」是高傳播角色標籤（5886 讚），且 Cluster 39 的關鍵字包含
+      「風紀」「風紀股長」，確認此梗已跨集延伸，超越單一場景成為固定人物標籤。
+      為 few-shot m006 的直接對應。size=93 是所有 cluster 中最大，傳播廣度最強。
+    matched_reference: m006
+
+  - id: dm012
+    cluster_id: 65
+    name: 四郎你還是叫了
+    type: quote_modification
+    canonical_text: "皇上剛死,甄環要幫他合眼睛時:四郎... 皇上:(突然醒來)你還是叫了,嬛嬛!"
+    canonical_likes: 2482
+    business_value: LOW
+    marketing_angle: >
+      情感品牌小眾應用（「說了不在乎，但名字一叫出口還是心軟了」）；
+      移植難度高，需極度依賴劇情脈絡才能理解笑點。
+    reasoning: >
+      搞笑反轉（皇上假死、甄嬛喚「四郎」後皇上「復活」）是創意 quote_modification，2482 讚顯示共鳴；
+      但 cluster 其他留言均為純情感討論（841、332、217、192 讚），未形成可仿作的固定格式。
+      屬於高讚單點創作而非穩定句式，故商業價值低。
+    matched_reference: null
+
+
+# ─────────────────────────────────────────
+# 非迷因 cluster（8 個）
+# ─────────────────────────────────────────
+non_meme_clusters:
+
+  - cluster_id: 63
+    theme: 寧嬪角色品格分析與毒殺細節考據（參湯加速藥效、情感為崇拜非愛情）
+    why_not_meme: >
+      留言以長篇情感分析和劇情考據為主（留言 1、2 各超過 150 字），沒有固定句式或可仿作格式。
+      留言 5 的 OS 改編（「幹皇上可能要殺果的孩子！看我不快去弄死他！」）僅為單則發揮，
+      未在 cluster 其他留言中形成群體仿作行為。
+
+  - cluster_id: 37
+    theme: 熹貴妃口紅色號討論與美妝聯想
+    why_not_meme: >
+      純觀眾美妝討論，沒有固定句式或可仿作的迷因格式。
+      【商業備注】留言 4（102 讚）明確指出「公佈各宮娘娘口紅色號一定賣爆，就像《延禧攻略》那樣」，
+      此 cluster 具有高度美妝品牌聯名商業潛力，建議作為「產品合作機會」追蹤，而非迷因素材。
+
+  - cluster_id: 35
+    theme: 孫儷演技稱讚（哭戲層次、配音成功、角色各時期蛻變）
+    why_not_meme: >
+      純演員評價與欣賞，沒有角色標籤化或可仿作句式。
+      留言品質高（最高 2025 讚），但屬於觀眾自然感想輸出，不具備格式複製性。
+
+  - cluster_id: 18
+    theme: 浣碧角色評價（與寧貴人愛法對比、桀驁之語的回旋諷刺）
+    why_not_meme: >
+      觀眾對浣碧角色的道德評價討論；留言 1 的「看不慣桀驁不遜的樣子」原句反彈雖有意思，
+      但後續留言未形成仿作，最高讚僅 1529，cluster 整體缺乏格式傳播跡象。
+
+  - cluster_id: 33
+    theme: 四阿哥繼位後的心理分析（多疑性格成因、與皇帝相似性、缺愛原因）
+    why_not_meme: >
+      深度角色心理分析，觀眾在做劇情解讀而非創作可仿作內容。
+      最高讚留言（1242 讚）是情境分析，其他留言亦為感想，無固定格式。
+
+  - cluster_id: 39
+    theme: 風紀股長梗跨集延伸（與 Cluster 57 高度重疊）
+    why_not_meme: >
+      核心梗「風紀股長」已在 Cluster 57（dm011）完整捕捉；此 cluster 最高讚留言（1162 讚）
+      是關於「抓到夏刈最神」的獨立感想，整體為跨集混合討論，未提供新的格式或角色維度。
+      視為 dm011 的補充佐証 cluster，不另立迷因條目。
+
+  - cluster_id: 24
+    theme: 野額娘 / 弘曆吐槽甄嬛只比自己大 7 歲
+    why_not_meme: >
+      留言 1（752 讚）的年齡差反諷有趣（「皇額娘老了 / ㄇㄉㄈㄎ你也才大我7歲」），
+      但整個 cluster 總讚數僅 1467 且 max 讚只有 752；其他留言均為獨立感想，未仿作此格式。
+      尚未形成規模，可列為未來觀察對象（若後續留言增加則升格為迷因）。
+
+  - cluster_id: 7
+    theme: 朧月與敬妃的母女關係情感討論（認母方式、親情層次）
+    why_not_meme: >
+      觀眾對母女情感的細膩長篇分析，以個人感受分享為主；
+      留言 3（310 讚）有「敬妃心機論」觀點但屬討論，無可仿作格式或角色標籤化。
+
+
+# ─────────────────────────────────────────
+# Noise 中的潛力候選（7 則）
+# ─────────────────────────────────────────
+potential_candidates:
+
+  - source: noise
+    text: "皇上:我最期待的就是每次演吃丹藥的時候,因為都可以吃到巧克力球"
+    likes: 7145
+    type: prop_joke
+    potential_value: HIGH
+    reasoning: >
+      演員自爆幕後：嚴肅毒殺場景其實在吃巧克力零食，高度反差製造笑點。
+      7145 讚為 noise 最高讚，是本資料集確認迷因（few-shot m005）的直接對應孤狼留言。
+      若出現更多仿作（「演[X角色]最期待[道具食物]」），即可升格為 confirmed meme。
+      商業應用：食品品牌幕後植入、演員代言幽默素材。
+
+  - source: noise
+    text: "「哀家能有今日,全靠皇后您一手指點歷練,自然感恩戴德。」這句嗆爆🤣"
+    likes: 2574
+    type: quote_modification
+    potential_value: HIGH
+    reasoning: >
+      完整可引用的反諷台詞：「感謝傷害我的人讓我變更強」句式。
+      2574 讚且格式自帶諷刺張力（錶面感謝、實為嗆聲），可直接被搬用。
+      商業應用：「全靠競爭對手的刺激，才有今日的我們」品牌敘事；
+      或「感謝那些說我不行的人」勵志型行銷文案。
+
+  - source: noise
+    text: "玢兒:本劇最大掃把星XD 到了誰家,誰家倒 先是甄府,再是瓜爾佳府,最後是果郡王府XDDDDDD"
+    likes: 3513
+    type: character_meme
+    potential_value: MEDIUM
+    reasoning: >
+      「到了誰家誰家倒」的掃把星標籤簡潔有力（3513 讚）。
+      限制：玢兒是配角，知名度依賴對劇情的熟悉；梗難以脫離劇情獨立流通。
+      若與「衰神」或「霉運」品牌情境結合，有機會作為小眾幽默素材。
+
+  - source: noise
+    text: "皇上從頭到尾都只問弘曕是不是自己親生的 靈犀:幹! 啊我勒"
+    likes: 2952
+    type: character_meme
+    potential_value: MEDIUM
+    reasoning: >
+      靈犀被完全無視的委屈角色梗（2952 讚）——「[重要人物]完全無視[我的存在]，幹！啊我勒」
+      格式可套用「被忽略的那個」情境，與打工人「努力無人看見」共鳴強。
+      適合職場行銷中「隱形貢獻者」主題。
+
+  - source: noise
+    text: "妝比菀嬪時期更濃了點,戰鬥力上升了大概三個檔次"
+    likes: 2674
+    type: quote_modification
+    potential_value: MEDIUM
+    reasoning: >
+      「[某可見改變]，戰鬥力上升了X個檔次」格式來自動漫文化，此處被套用到妝容升級。
+      格式輕量通用，可移植：「換了新配方，效果上升三個檔次」「升職後戰鬥力上升五個檔次」。
+      門檻低、易仿作，適合產品升級行銷的輕鬆切入點。
+
+  - source: noise
+    text: "太后:一向總說妳體貼,妳怎麼看著熹妃這樣跪著也不提醒哀家叫她起來? 眉莊:幹,我剛剛就說過了^_^"
+    likes: 2557
+    type: quote_modification
+    potential_value: MEDIUM
+    reasoning: >
+      「幹，我剛剛就說過了^_^」OS 改編展現打工人被無視後的無奈笑臉（2557 讚）。
+      格式：「[上級提出需求] → [我]：幹，我剛剛就說過了」，共鳴對象廣——
+      適合職場幽默品牌、溝通工具的「被忽視的意見」行銷切點。
+
+  - source: noise
+    text: "眼神戲 寧嬪:上半場我做完了,下半場就看妳的了! 熹貴妃:看老娘弄死這個渣男!"
+    likes: 1790
+    type: quote_modification
+    potential_value: MEDIUM
+    reasoning: >
+      「上半場我做完了，下半場就看你的了」接力合作框架（1790 讚）——
+      可套用運動賽事行銷、品牌合作宣傳、工作交接情境。
+      兩人對話 OS 格式清晰，易改編；但理解此梗需具備劇情背景，脫劇流通性中等。

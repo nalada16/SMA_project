@@ -11,7 +11,7 @@ judge.py — 產出半自動的 LLM judge review 文件。
 之後流程：
     - 開啟 Claude Code (或人類)
     - 讀 final_project/output/review_for_judge.md
-    - 照檔案末尾的 prompt 寫 final_project/output/meme_inventory.yaml
+    - 照檔案末尾的 prompt 寫 final_project/output/meme_inventory_N.yaml（序號自動遞增）
 
 Usage:
     uv run final_project/judge.py
@@ -34,19 +34,24 @@ NOISE_TOP_N   = 20            # noise 中高讚留言前 N 個拿去判斷
 
 
 def render_few_shot(gt: dict) -> str:
-    """把 ground_truth.yaml 內容渲染成 few-shot 範例。"""
+    """把 ground_truth.yaml 內容渲染成 few-shot 範例（風格示範，非答案）。"""
+    memes = gt["confirmed_memes"]
     lines = []
-    lines.append("## Few-shot 範例（已驗證迷因，作為判斷時的參考）\n")
-    lines.append("以下 8 個是已知的真迷因，請依此風格判斷新 cluster：\n")
+    lines.append("## Few-shot 範例（迷因風格示範）\n")
+    lines.append(f"以下 {len(memes)} 個是人類認定的迷因或具商業價值的範例。"
+                 f"請依此風格在待判斷的 cluster / noise 留言中找出同類內容，"
+                 f"不需要逐一回對這些範例：\n")
 
-    for meme in gt["confirmed_memes"]:
+    for meme in memes:
         lines.append(f"### {meme['id']} — {meme['name']}")
-        lines.append(f"- **代表留言**：「{meme['canonical_text']}」（{meme['canonical_likes']} 讚）")
+        likes = meme.get("canonical_likes")
+        if likes is not None:
+            lines.append(f"- **代表留言**：「{meme['canonical_text']}」（{likes} 讚）")
+        else:
+            lines.append(f"- **代表留言**：「{meme['canonical_text']}」")
         lines.append(f"- **類型**：`{meme['type']}`")
-        lines.append(f"- **對應場景**：{meme['scene_ref']}")
-        lines.append(f"- **判定**：confirmed_meme")
-        if meme.get("failure_note"):
-            lines.append(f"- **演算法盲點**：{meme['failure_note']}")
+        if meme.get("usage_note"):
+            lines.append(f"- **使用情境**：{meme['usage_note']}")
         lines.append("")
 
     lines.append("### potential 範例")
@@ -102,12 +107,53 @@ def render_noise(clusters_df: pd.DataFrame, n: int) -> str:
     return "\n".join(lines)
 
 
-JUDGE_PROMPT = """\
+INVENTORY_TEMPLATE = """\
+# meme_inventory_template.yaml — 輸出格式範本
+# 請勿直接修改此檔案，填入內容後存為 meme_inventory_N.yaml
+
+meta:
+  source_file: review_for_judge.md
+  total_clusters_judged: ~
+  total_noise_candidates: ~
+
+discovered_memes:
+  - id: dm001
+    cluster_id: ~
+    name: ~
+    type: ~
+    canonical_text: ~
+    canonical_likes: ~
+    business_value: HIGH/MEDIUM/LOW
+    marketing_angle: ~
+    reasoning: ~
+    matched_reference: ~
+
+non_meme_clusters:
+  - cluster_id: ~
+    theme: ~
+    why_not_meme: ~
+
+potential_candidates:
+  - source: noise
+    text: ~
+    likes: ~
+    type: ~
+    potential_value: HIGH/MEDIUM/LOW
+    reasoning: ~
+"""
+
+
+def get_judge_prompt(inventory_path: Path) -> str:
+    return f"""\
 ---
 
 ## 給 LLM Judge 的任務 Prompt
 
-你（agent）的任務：根據上面提供的 few-shot 範例與待判斷材料，產出 `output/meme_inventory.yaml`。
+你（agent）的任務：根據上面提供的迷因風格示範，在待判斷的 cluster 與 noise 留言中
+**找出新的迷因**，產出 `{inventory_path.name}`。
+
+few-shot 範例是「人類認定的迷因長什麼樣」的示範，不是必須對應的答案；
+若某個 cluster 剛好對應到某個範例，在 `matched_reference` 欄位註明，對不上就 null。
 
 ### 判斷規則
 
@@ -139,7 +185,7 @@ JUDGE_PROMPT = """\
 
 ### 輸出格式
 
-寫到 `output/meme_inventory.yaml`：
+格式參考 `output/meme_inventory_template.yaml`，填入內容後存為 `{inventory_path.name}`：
 
 ```yaml
 meta:
@@ -147,17 +193,8 @@ meta:
   total_clusters_judged: <K>
   total_noise_candidates: <N>
 
-confirmed_memes:
-  - id: m001            # 從 ground truth 來的 id
-    name: 熹妃回宮接龍
-    cluster_id: <在這次分析中對應的 cluster id>
-    type: catchphrase_chain
-    business_value: HIGH
-    marketing_angle: <一句話的行銷方向>
-    note: <對 cluster 內容的觀察>
-
-algorithm_discovered:    # 非 ground truth 的真迷因
-  - id: ad001
+discovered_memes:         # 從 cluster 中辨識出的迷因（含對應到 few-shot 範例與全新發現）
+  - id: dm001
     cluster_id: <id>
     name: <短名稱>
     type: <類型>
@@ -166,6 +203,7 @@ algorithm_discovered:    # 非 ground truth 的真迷因
     business_value: HIGH/MEDIUM/LOW
     marketing_angle: <行銷方向>
     reasoning: <為什麼判定為迷因>
+    matched_reference: <few-shot 中的 id，例如 m001；對不上填 null>
 
 non_meme_clusters:        # 看似 top 但實為非迷因
   - cluster_id: <id>
@@ -208,16 +246,29 @@ def main():
     parts.append(f"Noise 候選：Top **{args.noise_n}**（依讚數）")
     parts.append("\n---\n")
 
+    # 計算下一個 inventory 序號（meme_inventory_1.yaml, _2.yaml, ...）
+    existing = list(OUTPUT_DIR.glob("meme_inventory_*.yaml"))
+    next_n = max(
+        (int(p.stem.split("_")[-1]) for p in existing if p.stem.split("_")[-1].isdigit()),
+        default=0,
+    ) + 1
+    inventory_path = OUTPUT_DIR / f"meme_inventory_{next_n}.yaml"
+
+    # 寫 template 供 agent 參考格式
+    template_path = OUTPUT_DIR / "meme_inventory_template.yaml"
+    template_path.write_text(INVENTORY_TEMPLATE, encoding="utf-8")
+    print(f"  Template → {template_path.name}")
+
     parts.append(render_few_shot(gt))
     parts.append(render_clusters(analysis, clusters_df, args.top_k))
     parts.append(render_noise(clusters_df, args.noise_n))
-    parts.append(JUDGE_PROMPT)
+    parts.append(get_judge_prompt(inventory_path))
 
     out_path = OUTPUT_DIR / "review_for_judge.md"
     out_path.write_text("\n".join(parts), encoding="utf-8")
     print(f"  Saved → {out_path}")
     print(f"\n下一步：開 Claude Code，請 agent 讀 {out_path.name}，"
-          f"按檔案末尾的 prompt 寫 output/meme_inventory.yaml")
+          f"按檔案末尾的 prompt 寫 {inventory_path.name}")
 
 
 if __name__ == "__main__":
